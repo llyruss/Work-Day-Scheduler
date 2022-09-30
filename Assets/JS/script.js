@@ -25,22 +25,6 @@ for (i = 0; i < pageTime.length; i++) {
 }
 //save text entries to localStorage 
 
-let saveButton = $(".saveBtn")
-
-for (i = 0; i < saveButton.length; i++) {
-    $(saveButton[i].firstChild).on("click", function (e) {
-        //DOM traversal!
-        let textArea = e.target.parentElement.parentElement.childNodes[3].childNodes[1].value
-        let textHour = e.target.parentElement.parentElement.childNodes[3].getAttribute('value')
-
-        taskData = JSON.parse(localStorage.getItem("taskData"));
-
-        taskData[0][textHour] = textArea
-
-        localStorage.setItem("taskData", JSON.stringify(taskData))
-    })
-}
-
 if (localStorage.getItem("taskData") === null) {
     let taskData = [
         {
@@ -57,7 +41,37 @@ if (localStorage.getItem("taskData") === null) {
     ];
     localStorage.setItem("taskData", JSON.stringify(taskData));
 }
+
+let saveButton = $(".saveBtn")
+
+for (i = 0; i < saveButton.length; i++) {
+    $(saveButton[i].firstChild).on("click", function (e) {
+        //DOM traversal!
+        //retrieve text writing in scheduler corresponding to the click event
+        let textArea = e.target.parentElement.parentElement.childNodes[3].childNodes[1].value
+       //retrieve the hour corresponding to the click event
+        let textHour = e.target.parentElement.parentElement.childNodes[3].getAttribute('value')
+        //retrieve local storage data
+        taskData = JSON.parse(localStorage.getItem("taskData"));
+        //updating the taskData object value for the selected key(hours)
+        taskData[0][textHour] = textArea
+        //update local storage to include the text written in the scheduler
+        localStorage.setItem("taskData", JSON.stringify(taskData))
+    })
+}
+
+//send from local storage back to the page
+    //getting the data saved in local storage and turning it back into and object
 let storeTaskData = JSON.parse(localStorage.getItem("taskData"))
+    //setting a variable array for the elements where the text data is written
+let textAreaArray = $(".description")
+
+// for each text area element, set the text content to its corresponding hour value from local storage
+for (i=0; i<textAreaArray.length; i++){
+    let textAreaHour = textAreaArray[i].parentElement.getAttribute("value")
+    textAreaArray[i].textContent = storeTaskData[0][textAreaHour]
+}
+
 
 
 
